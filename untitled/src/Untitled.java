@@ -72,6 +72,11 @@ public class Untitled {
         {
             System.out.println("Enter the name of item " + (i+1));
             itemName[i]=console.next();
+            if (itemName[i].length()>=10)
+            {
+                System.out.println("Item name is too long..");
+                break;
+            }
             System.out.println("Enter the price of " + (itemName[i]));
             itemPrice[i]=console.nextDouble();
             System.out.println("Enter the quantity of " + (itemName[i]));
