@@ -1,6 +1,7 @@
 import java.text.DecimalFormat;
 import java.util.Scanner;
 import java.io.Console;
+import com.ubs.wit.codered.Item;
 
 public class Untitled {
 
@@ -9,29 +10,29 @@ public class Untitled {
         if (Qty < 10) {
             return 0.0;
         }
-        else if (Qty >= 10 && Qty < 20) {
+        else if ( Qty < 20) {
             return 10.0;
         }
         else
             return 20.0;
     }
-    public static int getMaxPrice(double [] price) {
-        double maxPrice = price[0];
+    public static int getMaxPrice(Item [] items) {
+        double maxPrice = items[0].getPrice();
         int max = 0;
-        for (int i = 1; i < price.length; i++) {
-            if (price[i] > maxPrice) {
-                maxPrice = price[i];
+        for (int i = 1; i < items.length; i++) {
+            if (items[i].getPrice() > maxPrice) {
+                maxPrice = items[i].getPrice();
                 max = i;
             }
         }
         return max;
     }
-    public static int getMinPrice(double [] price) {
-        double minPrice = price[0];
+    public static int getMinPrice(Item [] items) {
+        double minPrice = items[0].getPrice();
         int min = 0;
-        for (int i = 1; i < price.length; i++) {
-            if (price[i] < minPrice) {
-                minPrice = price[i];
+        for (int i = 1; i < items.length; i++) {
+            if (items[i].getPrice() < minPrice) {
+                minPrice = items[i].getPrice();
                 min = i;
             }
         }
@@ -62,34 +63,39 @@ public class Untitled {
         System.out.println("Enter the number of items in the shop list");
 
         int n = console.nextInt();
-        String [] itemName = new String[n];
-        double [] itemPrice = new double[n];
-        int [] itemQty = new int [n];
-        double [] itemCpn = new double[n];
+        Item [] items = new Item[n];
+
         double totalCost = 0.0;
 
         for (int i = 0; i<n; i++)
         {
+            items[i] = new Item();
             System.out.println("Enter the name of item " + (i+1));
-            itemName[i]=console.next();
-            if (itemName[i].length()>=10)
-            {
-                System.out.println("Item name is too long..");
-                break;
-            }
-            System.out.println("Enter the price of " + (itemName[i]));
-            itemPrice[i]=console.nextDouble();
-            System.out.println("Enter the quantity of " + (itemName[i]));
-            itemQty[i]=console.nextInt();
-            itemCpn[i] = getCoupon(itemQty[i]);
-            System.out.println("The discount for " + (itemName[i]) + " is " + f.format(itemCpn[i]) + "%");
-            System.out.println("Total cost of " + (itemName[i]) + " is "
-                    + f.format(getTotalCost(itemPrice[i],itemQty[i],itemCpn[i])) + "PLN");
-            totalCost += getTotalCost(itemPrice[i],itemQty[i],itemCpn[i]);
+            String name = console.next();
+            items[i].setName(name);
+
+           System.out.println("Enter the price of " + (items[i].getName()));
+            items[i].setPrice(console.nextDouble());
+
+            System.out.println("Enter the quantity of " + (items[i].getName()));
+            items[i].setQuantity(console.nextInt());
+
+            items[i].setCoupon(getCoupon(items[i].getQuantity()));
+            System.out.println("The coupon for " + (items[i].getName()) + " is " + f.format(items[i].getCoupon()) + "%");
+
+            System.out.println("Total cost of " + (items[i].getName()) + " with coupon is "
+                    + f.format(getTotalCost(items[i].getPrice(),items[i].getQuantity(),items[i].getCoupon())) + "PLN");
+            totalCost += getTotalCost(items[i].getPrice(),items[i].getQuantity(),items[i].getCoupon());
         }
+
         System.out.println("Total cost of the full basket is " + f.format(totalCost) + "PLN");
-        System.out.println("The most expensive item in the basket is " + itemName[getMaxPrice(itemPrice)]);
-        System.out.println("The least expensive item in the basket is " + itemName[getMinPrice(itemPrice)]);
+        System.out.println("***** Costs Statistics *****");
+        int max = getMaxPrice(items);
+        int min = getMinPrice(items);
+        System.out.println("The most expensive item in the basket is " + items[max].getName() + " "
+                + items[max].getPrice()+ " PLN");
+        System.out.println("The least expensive item in the basket is " + items[min].getName()+ " "
+                + items[min].getPrice()+ " PLN");
 
         System.out.println("Enter the promo code ");
         String promoCode = console.next();
